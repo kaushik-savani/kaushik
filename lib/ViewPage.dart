@@ -60,10 +60,6 @@ class _ViewPageState extends State<ViewPage> {
         d = dummy.fromJson(l[i]);
         item.add(d!.photoUrl);
       }
-      /*for (int i = 0; i < l1.length; i++) {
-        d1 = dummy1.fromJson(l1[i]);
-        //item1.add(d1!.photoUrl);
-      }*/
       setState(() {
         status = true;
       });

@@ -37,7 +37,7 @@ class _DummyproductsState extends State<Dummyproducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(""),
+        title: Text("Dummy"),
       ),
       body: status?ListView.builder(itemCount: l.length,itemBuilder: (context, index) {
         dummy d=dummy.fromJson(l[index]);
