@@ -3,6 +3,6 @@ import 'package:kaushik/ViewPage.dart';
 import 'package:kaushik/dummyproducts.dart';
 
 void main(){
-  runApp(MaterialApp(home: Dummyproducts(),));
+  runApp(MaterialApp(home: ViewPage(),));
 }
 
