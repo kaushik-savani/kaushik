@@ -43,8 +43,9 @@ class _ViewPageState extends State<ViewPage> {
           },
         ),
       );
-      /*var response3 = await Dio().get(
+      var response3 = await Dio().post(
         "https://audio-kumbh.herokuapp.com/api/v2/homepage/category",
+        data: {"sectionfor": "audiobook"},
         options: Options(
           headers: {
             'x-guest-token':
@@ -52,8 +53,10 @@ class _ViewPageState extends State<ViewPage> {
             // set content-length
           },
         ),
-      );*/
-      print(response2.data);
+      );
+      print("***************************8");
+      print(response3.data);
+      //print(response2.data);
       l = (response.data);
       l1 = response2.data;
       for (int i = 0; i < l.length; i++) {
