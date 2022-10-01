@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:http/http.dart' as http;
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class ViewPage extends StatefulWidget {
@@ -12,11 +12,10 @@ class ViewPage extends StatefulWidget {
 }
 
 class _ViewPageState extends State<ViewPage> {
-  CarouselController controller = CarouselController();
   int pageIndex = 0;
   List l = [];
   List l1 = [];
-  Map l2={};
+  List l2 = [];
   List item = [];
 
   Future<List> getBanner() async {
@@ -32,7 +31,7 @@ class _ViewPageState extends State<ViewPage> {
         "https://audio-kumbh.herokuapp.com/api/v2/category/audiobook");
     var response = await http.get(url, headers: {
       'x-guest-token':
-      'U2FsdGVkX1+WVxNvXEwxTQsjLZAqcCKK9qqQQ5sUlx8aPkMZ/FyEyAleosfe07phhf0gFMgxsUh2uDnDSkhDaAfn1aw6jYHBwdZ43zdLiTcZedlS9zvVfxYG67fwnb4U454oAiMV0ImECW1DZg/w3aYZGXZIiQ+fiO4XNa1y1lc0rHvjKnPkgrYkgbTdOgAfnxnxaNHiniWClKWmVne/0vO0s6Vh7HpC0lRjs0LKTwM='
+          'U2FsdGVkX1+WVxNvXEwxTQsjLZAqcCKK9qqQQ5sUlx8aPkMZ/FyEyAleosfe07phhf0gFMgxsUh2uDnDSkhDaAfn1aw6jYHBwdZ43zdLiTcZedlS9zvVfxYG67fwnb4U454oAiMV0ImECW1DZg/w3aYZGXZIiQ+fiO4XNa1y1lc0rHvjKnPkgrYkgbTdOgAfnxnxaNHiniWClKWmVne/0vO0s6Vh7HpC0lRjs0LKTwM='
       // set content-length
     });
     print('categories : ${response.body}');
@@ -40,29 +39,30 @@ class _ViewPageState extends State<ViewPage> {
     return l1;
   }
 
-  Future<Map> getAudiobooks() async {
+  Future<List> getAudiobooks() async {
     var url =
-    Uri.parse("https://audio-kumbh.herokuapp.com/api/v2/homepage/category");
+        Uri.parse("https://audio-kumbh.herokuapp.com/api/v2/homepage/category");
     var response = await http.post(
       url,
       body: {"sectionfor": "audiobook"},
       headers: {
         'x-guest-token':
-        'U2FsdGVkX1+WVxNvXEwxTQsjLZAqcCKK9qqQQ5sUlx8aPkMZ/FyEyAleosfe07phhf0gFMgxsUh2uDnDSkhDaAfn1aw6jYHBwdZ43zdLiTcZedlS9zvVfxYG67fwnb4U454oAiMV0ImECW1DZg/w3aYZGXZIiQ+fiO4XNa1y1lc0rHvjKnPkgrYkgbTdOgAfnxnxaNHiniWClKWmVne/0vO0s6Vh7HpC0lRjs0LKTwM='
+            'U2FsdGVkX1+WVxNvXEwxTQsjLZAqcCKK9qqQQ5sUlx8aPkMZ/FyEyAleosfe07phhf0gFMgxsUh2uDnDSkhDaAfn1aw6jYHBwdZ43zdLiTcZedlS9zvVfxYG67fwnb4U454oAiMV0ImECW1DZg/w3aYZGXZIiQ+fiO4XNa1y1lc0rHvjKnPkgrYkgbTdOgAfnxnxaNHiniWClKWmVne/0vO0s6Vh7HpC0lRjs0LKTwM='
         // set content-length
       },
     );
     print('audiobooks : ${response.body}');
-    l2=jsonDecode(response.body);
+    l2 = jsonDecode(response.body)["data"]['home_category_list'];
     return l2;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
+        body: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -75,69 +75,44 @@ class _ViewPageState extends State<ViewPage> {
                         banner b = banner.fromJson(l[i]);
                         item.add(b.photoUrl);
                       }
-                      return Column(
-                        children: [
-                          CarouselSlider(
-                            items: item.map((i) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    width:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width,
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                            image: NetworkImage("$i"),
-                                            fit: BoxFit.fill)),
-                                  );
-                                },
+                      return FlutterCarousel(
+                        items: item.map((i) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Stack(
+                                children: [
+                                  Container(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 25.0),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: EdgeInsets.symmetric(horizontal: 5),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                              image: NetworkImage("${i}"),
+                                              fit: BoxFit.fill)),
+                                    ),
+                                  ),
+                                ],
                               );
-                            }).toList(),
-                            carouselController: controller,
-                            options: CarouselOptions(
-                              height: 150,
-                              reverse: false,
-                              //autoPlay: true,
-                              initialPage: 0,
-                              aspectRatio: 16 / 9,
-                              pageSnapping: true,
-                              viewportFraction: 1,
-                              enableInfiniteScroll: false,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  pageIndex = index;
-                                  print("${pageIndex}");
-                                });
-                              },
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: item.map(
-                                  (image) {
-                                int index = item.indexOf(image);
-                                return Container(
-                                  width: 9.0,
-                                  height: 9.0,
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: 10.0, horizontal: 4.0),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      shape: BoxShape.circle,
-                                      color: pageIndex == index
-                                          ? Color.fromRGBO(0, 0, 0, 0.9)
-                                          : Colors.transparent),
-                                );
-                              },
-                            ).toList(), // this was the part the I had to add
+                            },
+                          );
+                        }).toList(),
+                        options: CarouselOptions(
+                          height: 170,
+                          reverse: false,
+                          autoPlay: true,
+                          initialPage: 0,
+                          aspectRatio: 16 / 9,
+                          pageSnapping: true,
+                          viewportFraction: 1,
+                          enableInfiniteScroll: false,
+                          slideIndicator: CircularSlideIndicator(
+                            indicatorBorderColor: Colors.black,
+                            indicatorBackgroundColor: Colors.white
                           )
-                        ],
+                        ),
                       );
                     }
                     return Center(
@@ -155,90 +130,94 @@ class _ViewPageState extends State<ViewPage> {
               ),
               Text(
                 "Categories",
-                style:
-                TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
               ),
-              FutureBuilder(builder: (context, snapshot) {
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    List l1=snapshot.data as List;
-                    return SizedBox(
-                      height: 120,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: l1.length,
-                        itemBuilder: (context, index) {
-                          categories c=categories.fromJson(l1[index]);
-                          return Stack(
-                            children: [
-                              Container(
-                                  height: 100,
-                                  width: 150,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  child: Image.network(
-                                    "${c.photoUrl}",
-                                    fit: BoxFit.fill,
-                                  )),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 15.0, top: 20),
-                                child: Text(
-                                  "${c.name}",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Colors.white,
-                                      decorationStyle:
-                                      TextDecorationStyle.solid),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 15.0, top: 65),
-                                child: Text(
-                                  "${c.count}",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 25.0, top: 65),
-                                child: Text("${c.type}",
-                                    style: TextStyle(color: Colors.white)),
-                              ),
-                              Padding(
-                                padding:
-                                const EdgeInsets.only(left: 105, top: 50),
-                                child: IconButton(
-                                    onPressed: () {},
-                                    icon: CircleAvatar(
-                                      maxRadius: 12,
-                                      backgroundColor: Colors.white,
-                                      child: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 12,
-                                      ),
+              FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
+                      List l1 = snapshot.data as List;
+                      return SizedBox(
+                        height: 120,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: l1.length,
+                          itemBuilder: (context, index) {
+                            categories c = categories.fromJson(l1[index]);
+                            return Stack(
+                              children: [
+                                Container(
+                                    height: 100,
+                                    width: 150,
+                                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                    child: Image.network(
+                                      "${c.photoUrl}",
+                                      fit: BoxFit.fill,
                                     )),
-                              )
-                            ],
-                          );
-                        },
-                      ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 15.0, top: 20),
+                                  child: Text(
+                                    "${c.name}",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.white,
+                                        decorationStyle:
+                                            TextDecorationStyle.solid),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 15.0, top: 65),
+                                  child: Text(
+                                    "${c.count}",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 25.0, top: 65),
+                                  child: Text("${c.type}",
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 105, top: 50),
+                                  child: IconButton(
+                                      onPressed: () {},
+                                      icon: CircleAvatar(
+                                        maxRadius: 12,
+                                        backgroundColor: Colors.white,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 12,
+                                        ),
+                                      )),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    }
+                    return Center(
+                      child: Text("Something went Wrong"),
                     );
                   }
-                  return Center(child: Text("Something went Wrong"),);
-                }
-                return Center(child: CircularProgressIndicator(),);
-              }, future: getCategories(),),
-              
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+                future: getCategories(),
+              ),
               Text(
                 "Audiobooks",
-                style:
-                TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
@@ -248,41 +227,173 @@ class _ViewPageState extends State<ViewPage> {
                 children: [
                   Text(
                     "Most Popular",
-                    style: TextStyle(
-                        fontSize: 18, color: Colors.brown.shade300),
+                    style: TextStyle(fontSize: 18, color: Colors.brown.shade300),
                   ),
                   Text(
                     "View All",
-                    style: TextStyle(
-                        fontSize: 18, color: Colors.brown.shade300),
+                    style: TextStyle(fontSize: 18, color: Colors.brown.shade300),
                   ),
                 ],
               ),
-              FutureBuilder(builder: (context, snapshot) {
-                if(snapshot.connectionState==ConnectionState.done){
-                  if(snapshot.hasData){
-                    Map<String,dynamic> l2=snapshot.data as Map<String,dynamic>;
-                    dummy d=dummy.fromJson(l2);
-                    return SizedBox(
-                      height: 120,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return Container(child: Text("${d.data!.homeCategoryList![index].idList![index].author}"),);
-                        },
-                      ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                height: 220,
+                child: FutureBuilder(
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        List l2 = snapshot.data as List;
+                        dummy d = dummy.fromJson(l2[0]);
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: d.idList!.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 160,
+                                    width: 105,
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                "${d.idList![index].audioBookDpUrl}"),
+                                            fit: BoxFit.fill)),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0, vertical: 5),
+                                    child: SizedBox(
+                                      width: 105,
+                                      child: Text(
+                                        "${d.idList![index].name}",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    child: SizedBox(
+                                      width: 90,
+                                      child: Text(
+                                        "${d.idList![index].author}",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  )
+                                ]);
+                          },
+                        );
+                      }
+                      return Center(
+                        child: Text("Something went Wrong"),
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
-                  }
-                  return Center(child: Text("Something went Wrong"),);
-                }
-                return Center(child: CircularProgressIndicator(),);
-              }, future: getAudiobooks(),)
+                  },
+                  future: getAudiobooks(),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Today's Picks",
+                    style: TextStyle(fontSize: 18, color: Colors.brown.shade300),
+                  ),
+                  Text(
+                    "View All",
+                    style: TextStyle(fontSize: 18, color: Colors.brown.shade300),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(height: 300,
+                child: FutureBuilder(
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        List l2 = snapshot.data as List;
+                        dummy d = dummy.fromJson(l2[1]);
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: d.idList!.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 160,
+                                    width: 105,
+                                    margin: EdgeInsets.symmetric(horizontal: 5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                "${d.idList![index].audioBookDpUrl}"),
+                                            fit: BoxFit.fill)),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0, vertical: 5),
+                                    child: SizedBox(
+                                      width: 105,
+                                      child: Text(
+                                        "${d.idList![index].name}",
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
+                                    child: SizedBox(
+                                      width: 90,
+                                      child: Text(
+                                        "${d.idList![index].author}",
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  )
+                                ]);
+                          },
+                        );
+                      }
+                      return Center(
+                        child: Text("Something went Wrong"),
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                  future: getAudiobooks(),
+                ),
+              ),
+
             ],
           ),
         ),
-      )
-    );
+      ),
+    ));
   }
 }
 
@@ -299,17 +410,18 @@ class banner {
   String? type;
   String? redirect;
 
-  banner({this.sId,
-    this.bannerFor,
-    this.forId,
-    this.photoUrl,
-    this.createdAt,
-    this.updatedAt,
-    this.iV,
-    this.isLock,
-    this.redirectTo,
-    this.type,
-    this.redirect});
+  banner(
+      {this.sId,
+      this.bannerFor,
+      this.forId,
+      this.photoUrl,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.isLock,
+      this.redirectTo,
+      this.type,
+      this.redirect});
 
   banner.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -352,14 +464,15 @@ class categories {
   int? iV;
   int? count;
 
-  categories({this.sId,
-    this.type,
-    this.photoUrl,
-    this.name,
-    this.createdAt,
-    this.updatedAt,
-    this.iV,
-    this.count});
+  categories(
+      {this.sId,
+      this.type,
+      this.photoUrl,
+      this.name,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.count});
 
   categories.fromJson(Map json) {
     sId = json['_id'];
@@ -387,54 +500,12 @@ class categories {
 }
 
 class dummy {
-  Data? data;
-
-  dummy({this.data});
-
-  dummy.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-}
-
-class Data {
-  List<HomeCategoryList>? homeCategoryList;
-
-  Data({this.homeCategoryList});
-
-  Data.fromJson(Map<String, dynamic> json) {
-    if (json['home_category_list'] != null) {
-      homeCategoryList = <HomeCategoryList>[];
-      json['home_category_list'].forEach((v) {
-        homeCategoryList!.add(new HomeCategoryList.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.homeCategoryList != null) {
-      data['home_category_list'] =
-          this.homeCategoryList!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class HomeCategoryList {
   String? sId;
   List<IdList>? idList;
 
-  HomeCategoryList({this.sId, this.idList});
+  dummy({this.sId, this.idList});
 
-  HomeCategoryList.fromJson(Map<String, dynamic> json) {
+  dummy.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     if (json['idList'] != null) {
       idList = <IdList>[];
@@ -472,27 +543,25 @@ class IdList {
   bool? isNewAudiobook;
   String? authorDpUrl;
   String? language;
-  String? publisherDpUrl;
 
   IdList(
       {this.sId,
-        this.audioBookDpUrl,
-        this.name,
-        this.tags,
-        this.category,
-        this.author,
-        this.publisher,
-        this.description,
-        this.reader,
-        this.files,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.isLock,
-        this.isNewAudiobook,
-        this.authorDpUrl,
-        this.language,
-        this.publisherDpUrl});
+      this.audioBookDpUrl,
+      this.name,
+      this.tags,
+      this.category,
+      this.author,
+      this.publisher,
+      this.description,
+      this.reader,
+      this.files,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.isLock,
+      this.isNewAudiobook,
+      this.authorDpUrl,
+      this.language});
 
   IdList.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -519,7 +588,6 @@ class IdList {
     isNewAudiobook = json['isNewAudiobook'];
     authorDpUrl = json['authorDpUrl'];
     language = json['language'];
-    publisherDpUrl = json['publisherDpUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -545,7 +613,6 @@ class IdList {
     data['isNewAudiobook'] = this.isNewAudiobook;
     data['authorDpUrl'] = this.authorDpUrl;
     data['language'] = this.language;
-    data['publisherDpUrl'] = this.publisherDpUrl;
     return data;
   }
 }
@@ -562,13 +629,13 @@ class Category {
 
   Category(
       {this.sId,
-        this.type,
-        this.photoUrl,
-        this.name,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.count});
+      this.type,
+      this.photoUrl,
+      this.name,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.count});
 
   Category.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -605,11 +672,11 @@ class Files {
 
   Files(
       {this.fileType,
-        this.sId,
-        this.title,
-        this.playCount,
-        this.seconds,
-        this.fileUrl});
+      this.sId,
+      this.title,
+      this.playCount,
+      this.seconds,
+      this.fileUrl});
 
   Files.fromJson(Map<String, dynamic> json) {
     fileType = json['fileType'];
