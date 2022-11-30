@@ -37,7 +37,8 @@ dependencies:
   flutter_carousel_widget:
   http:
   dio:
-
+  carousel_slider:
+  flutter_staggered_grid_view:
 dev_dependencies:
   flutter_test:
     sdk: flutter
