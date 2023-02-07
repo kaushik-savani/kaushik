@@ -150,3 +150,48 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     return newValue;
   }
 }
+
+/*
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class first extends StatelessWidget {
+  const first({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ChangeNotifierProvider(
+        builder: (context, child) {
+          return Consumer<Model>(
+            builder: (context, value, child) {
+              return Column(
+                children: [
+                  Text("${value.a}"),
+                  ElevatedButton(
+                      onPressed: () {
+                        value.increment();
+                      },
+                      child: Text("increment"))
+                ],
+              );
+            },
+          );
+        },
+        create: (context) => Model(),
+      ),
+    );
+  }
+}
+
+class Model extends ChangeNotifier {
+  int a = 0;
+
+  void increment() {
+    a++;
+    notifyListeners();
+  }
+}
+*/
