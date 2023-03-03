@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kaushik/ViewPage.dart';
+import 'package:kaushik/try.dart';
 
 void main() => runApp(const MyApp());
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: _title,
-      home: ViewPage(),
+      home: demoGrid(),
     );
   }
 }
