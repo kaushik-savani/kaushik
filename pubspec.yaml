@@ -39,6 +39,10 @@ dependencies:
   dio:
   carousel_slider:
   flutter_staggered_grid_view:
+  bloc: ^8.1.1
+  flutter_bloc: ^8.1.2
+  equatable: ^2.0.5
+  sms_autofill: ^2.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

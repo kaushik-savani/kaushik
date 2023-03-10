@@ -12,61 +12,32 @@ class _demoGridState extends State<demoGrid> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Grid Demo"),
-      ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height * .15,
-        child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-
-              },
-              child: Column(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOutCirc,
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    alignment: Alignment.center,
-                    height: 70.0 ,
-                    width: 70.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.amberAccent,
-                    ),
-                    child: Icon(
-                      Icons.gamepad_outlined,
-                    ),
-                  ),
-                  SizedBox(height: 4.0),
-                  Container(
-                    width: 60,
-                    child: Text('hello',
-                      style: TextStyle(
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-          scrollDirection: Axis.horizontal,
-          separatorBuilder: (_, __) => SizedBox(
-            width: 16.0,
-          ),
-          itemCount: 4,
+        appBar: AppBar(
+          title: Text("Grid Demo"),
         ),
-      )
-      /*MasonryGridView.count(itemCount: 4,
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height * .15,
+          child: ListView.separated(
+            itemCount: 4,
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {},
+                child: Column(children: const [
+                  CircleAvatar(
+                    backgroundColor: Colors.yellow,
+                    radius: 32,
+                    child: Icon(Icons.ac_unit),
+                  ),
+                  SizedBox(height: 10),
+                  Text("Hello"),
+                ]),
+              );
+            }, separatorBuilder: (_, __) => SizedBox(width: 16),
+          ),
+        )
+        /*MasonryGridView.count(itemCount: 4,
           itemBuilder: (context, index) {
             return InkWell(
               onTap: () {
@@ -83,6 +54,6 @@ class _demoGridState extends State<demoGrid> {
           crossAxisCount: 2,
       mainAxisSpacing: 2,
       crossAxisSpacing: 4,),*/
-    );
+        );
   }
 }
